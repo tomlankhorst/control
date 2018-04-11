@@ -5,18 +5,10 @@
 namespace {
 
 typedef control::classic::P<double> CDoubleP;
-typedef control::classic::PI<double> CDoublePI;
 class PDoubleTest : public ::testing::Test {
  protected:
   CDoubleP controller;
   PDoubleTest() : controller(2.0) {}
-};
-
-// PI controller K=2, Ti=1, Ts=0.1
-class PIDoubleTest : public ::testing::Test {
- protected:
-  CDoublePI controller;
-  PIDoubleTest() : controller(0.1, 2.0, 1.0) {}
 };
 
 TEST_F(PDoubleTest, ProportionalZeroTest) {
@@ -38,6 +30,15 @@ TEST_F(PDoubleTest, ProportionalLimitTest) {
   EXPECT_EQ(-1.5, controller.step(-2.0));
 }
 
+// PI controller K=2, Ti=1, Ts=0.1
+typedef control::classic::PI<double> CDoublePI;
+class PIDoubleTest : public ::testing::Test {
+ protected:
+  CDoublePI controller;
+  PIDoubleTest() : controller(0.1, 2.0, 1.0) {}
+};
+
+
 TEST_F(PIDoubleTest, LimitErrTest) {
   std::vector<double> u;
   std::vector<double> v = {2.1, 2.2, 2.3, 2.3, 2.3};
@@ -51,7 +52,6 @@ TEST_F(PIDoubleTest, LimitErrTest) {
   EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
-
 TEST_F(PIDoubleTest, ConstantErrTest) {
   std::vector<double> u;
   std::vector<double> v = {2.1, 2.2, 2.3, 2.4, 2.5};
@@ -63,9 +63,7 @@ TEST_F(PIDoubleTest, ConstantErrTest) {
   EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
-
 typedef control::classic::P<float> CFloatP;
-
 class PFloatTest : public ::testing::Test {
  protected:
   CFloatP controller;
@@ -81,7 +79,6 @@ TEST_F(PFloatTest, ProportionalLimitTest) {
 }
 
 typedef control::classic::P<int> CIntP;
-
 class PIntTest : public ::testing::Test {
  protected:
   CIntP controller;
@@ -94,6 +91,24 @@ TEST_F(PIntTest, ProportionalLimitTest) {
   EXPECT_EQ(-2, controller.step(-1));
   EXPECT_EQ(-3, controller.step(-2));
   EXPECT_EQ(3, controller.step(2));
+}
+
+// Ts = 100, K = 2, Ti = 50
+typedef control::classic::PI<int> CIntPI;
+class PIIntTest : public ::testing::Test {
+ protected:
+  CIntPI controller;
+  PIIntTest() : controller(100, 2, 50) {}
+};
+
+TEST_F(PIIntTest, ConstantErrTest) {
+  std::vector<int> u;
+  std::vector<int> v = {4, 6, 8, 10, 12};
+  
+  for(int i = 0; i < 5; i++)
+    u.push_back(controller.step(1));
+
+  EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
 }  // namespace
