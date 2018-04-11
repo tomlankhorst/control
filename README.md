@@ -9,3 +9,13 @@ Classic
 -------
 
 P, PI and PID control
+
+Tests
+-----
+
+```
+mkdir build && cd build
+cmake .. -DTESTS=ON
+make
+./controltests
+```
