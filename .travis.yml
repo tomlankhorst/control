@@ -9,9 +9,8 @@ compiler:
 before_script:
   - mkdir build
   - cd build
-  - cmake .. -DTEST=ON
+  - cmake .. -DTESTS=ON
 
 script:
-  - pwd
   - make
   - ./controltests
