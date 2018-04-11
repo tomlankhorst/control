@@ -1,3 +1,9 @@
+# Vim swap
+.*.swp
+
+# Build structure
+/build
+
 # Prerequisites
 *.d
 

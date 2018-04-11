@@ -9,13 +9,25 @@
 #ifndef CONTROL_CLASSIC_H_
 #define CONTROL_CLASSIC_H_
 
+#include <limits>
+#include <algorithm>
+
 namespace control { namespace classic {
+
+	/**
+	 * Helper that returns either infinity or maximum value
+	 */
+	template <typename T>
+	constexpr T max(){
+		return std::numeric_limits<T>::has_infinity
+				? std::numeric_limits<T>::infinity() : std::numeric_limits<T>::max();
+	}
 
 	template <typename T>
 	class AbstractController {
+		static_assert(std::numeric_limits<T>::is_signed, "Signed type required");
 	public:
-
-		AbstractController(T Limit_ = 1.0) : Limit(Limit_) {};
+		AbstractController(T Limit_=max<T>()) : Limit(Limit_) {};
 		virtual ~AbstractController() {};
 
 		// Limit
@@ -45,6 +57,18 @@ namespace control { namespace classic {
 		};
 
 		/**
+		 * Update the output limit
+		 *
+		 * @param T limit
+		 */
+		void setLimit(T limit)
+		{
+			Limit = limit;
+		}
+
+	protected:
+
+		/**
 		 * Limit the output
 		 *
 		 * @param T u
@@ -52,6 +76,10 @@ namespace control { namespace classic {
 		 */
 		T clip(T u)
 		{
+			if(Limit==std::numeric_limits<T>::infinity()){
+				return u;
+			}
+
 			// Determine if the signal is in range
 			if( !clipping && (u > Limit || u < -Limit) ){
 				clipping = true;
@@ -68,17 +96,6 @@ namespace control { namespace classic {
 		}
 
 		/**
-		 * Update the output limit
-		 *
-		 * @param T limit
-		 */
-		void setLimit(T limit)
-		{
-			Limit = limit;
-		}
-	protected:
-
-		/**
 		 * Retrieves the control output, unclipped
 		 *
 		 * @param T e the error
@@ -93,7 +110,7 @@ namespace control { namespace classic {
 	template <typename T>
 	class P : public AbstractController<T> {
 	public:
-		P(T Kp_, T Limit_=1.0) : AbstractController<T>(Limit_), Kp(Kp_) {};
+		P(T Kp_=1.0, T Limit_=max<T>()) : AbstractController<T>(Limit_), Kp(Kp_) {};
 		~P() {};
 
 		// Proportional gain
@@ -121,7 +138,8 @@ namespace control { namespace classic {
 	template<typename T>
 	class PI : public P<T> {
 	public:
-		PI(T Ts_, T Kp_=1.0, T Ti_=std::numeric_limits<T>::infinity(), T Limit_=1.0) : P<T>(Kp_, Limit_), Ti(Ti_), Ts(Ts_) {};
+		PI(T Ts_=1.0, T Kp_=1.0, T Ti_=max<T>(), T Limit_=max<T>())
+			: P<T>(Kp_, Limit_), Ti(Ti_), Ts(Ts_) {};
 		~PI() {};
 
 	protected:
@@ -161,7 +179,7 @@ namespace control { namespace classic {
 		T IF(T e)
 		{
 			// Integrate the error when not clipping
-			if( !clipping ) {
+			if( !AbstractController<T>::clipping ) {
 				e_int += e*Ts;
 			}
 			return e_int;
@@ -172,7 +190,7 @@ namespace control { namespace classic {
 	class PID : public PI<T>
 	{
 	public:
-		PID(T Ts_, T Kp_=1, T Ti_=std::numeric_limits<T>::infinity(), T Td_=0.0, T N_=std::numeric_limits<T>::infinity(), T Limit_=1.0)
+		PID(T Ts_=1.0, T Kp_=1.0, T Ti_=max<T>(), T Td_=0.0, T N_=max<T>(), T Limit_=max<T>())
 			: PI<T>(Kp_, Ti_, Ts_, Limit_), Td(Td_), N(N_) {};
 		~PID() {};
 
@@ -210,10 +228,11 @@ namespace control { namespace classic {
 		T DF(T e)
 		{
 			// Same value as (I) integrator
-			return e_int;
+			return PI<T>::e_int;
 		}
 	};
 
 } }
 
 #endif /* CONTROL_CLASSIC_H_ */
+
