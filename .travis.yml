@@ -1,0 +1,17 @@
+language: cpp
+sudo: false
+dist: trusty
+
+compiler:
+  - clang
+  - gcc
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake .. -DTEST=ON
+
+script:
+  - pwd
+  - make
+  - ./controltests

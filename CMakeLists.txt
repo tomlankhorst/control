@@ -25,4 +25,6 @@ if(TESTS)
 
   target_link_libraries(controltests ${GTEST_LIBRARIES})
 
+  add_test(controltests controltests)
+
 endif()
