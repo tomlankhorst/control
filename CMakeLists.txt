@@ -39,11 +39,13 @@ if(TESTS)
 
   enable_testing()
 
+  include_directories("${gmock_SOURCE_DIR}/include")
+
   add_executable(controltests
 	./tests/gtest.cpp
 	./tests/classic-test.cpp)
 
-  target_link_libraries(controltests gtest_main)
+  target_link_libraries(controltests gtest_main gtest gmock)
 
   add_test(controltests controltests)
 
