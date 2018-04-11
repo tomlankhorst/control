@@ -150,7 +150,7 @@ namespace control { namespace classic {
 		const T Ts;
 
 		// Integral error
-		T e_int = 0.0;
+		T e_int = 0;
 
 		/**
 		 * @inheritdoc
@@ -163,7 +163,7 @@ namespace control { namespace classic {
 			u = P<T>::control(e);
 
 			// Add up the integral part to the error
-			u+= (1/Ti)*IF(e);
+			u+= IF(e)/Ti;
 
 			return u;
 		}
