@@ -1,4 +1,4 @@
-#include "control/classic.h"
+#include "control/classic/pid.h"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
@@ -40,27 +40,23 @@ class PIDoubleTest : public ::testing::Test {
 
 
 TEST_F(PIDoubleTest, LimitErrTest) {
-  std::vector<double> u;
-  std::vector<double> v = {2.05, 2.15, 2.25, 2.3, 2.3};
+  std::vector<double> v = {2.1, 2.3, 2.5, 2.5, 2.5};
 
-  controller.setLimit(2.3);
+  controller.setLimit(2.5);
 
   // 10 steps
   for(int i = 0; i < 5; i++)
-    u.push_back(controller.step(1.0));
+    ASSERT_DOUBLE_EQ(controller.step(1.0), v[i]);
 
-  EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
 TEST_F(PIDoubleTest, ConstantErrTest) {
-  std::vector<double> u;
-  std::vector<double> v = {2.05, 2.15, 2.25, 2.35, 2.45};
+  std::vector<double> v = {2.1, 2.3, 2.5, 2.7, 2.9};
 
   // 10 steps
   for(int i = 0; i < 5; i++)
-    u.push_back(controller.step(1.0));
+    ASSERT_DOUBLE_EQ(controller.step(1.0), v[i]);
 
-  EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
 // PID controller K=1, Ti=Inf, Td=2, N=1, Ts=1
@@ -68,19 +64,18 @@ typedef control::classic::PID<double> CDoublePID;
 class PIDDoubleTest : public ::testing::Test {
  protected:
   CDoublePID controller;
-  PIDDoubleTest() : controller(1.0, 1.0, control::classic::max<double>(), 2.0, 1) {}
+  PIDDoubleTest() : controller(1.0, 1.0, 1.0, 1.0, 1.0) {}
 };
 
 
 TEST_F(PIDDoubleTest, SimplePID) {
   std::vector<double> u;
-  std::vector<double> v = {2.0, 3.5, 4.75, 5.875, 6.9375};
+  std::vector<double> v = {2, 3, 4, 5, 6};
 
   // 5 steps
-  for(int i = 1; i <= 5; i++)
-    u.push_back(controller.step(i));
+  for(int i = 0; i < 5; i++)
+    EXPECT_DOUBLE_EQ(controller.step(i), v[i]);
 
-  EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
 
@@ -124,7 +119,7 @@ class PIIntTest : public ::testing::Test {
 
 TEST_F(PIIntTest, ConstantErrTest) {
   std::vector<int> u;
-  std::vector<int> v = {3, 5, 7, 9, 11};
+  std::vector<int> v = {4, 8, 12, 16, 20};
   
   for(int i = 0; i < 5; i++)
     u.push_back(controller.step(1));
