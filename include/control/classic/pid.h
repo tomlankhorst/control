@@ -142,10 +142,10 @@ namespace control { namespace classic {
 	{
 	public:
 		PID(T Ts=1.0, T Kp=1.0, T Ti=max<T>(), T Td=0.0, T N=max<T>(), T Limit=max<T>()) : AbstractController<T>(Limit), B(
-				(Kp*(4*Td/N + 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td + 2*Ts))/(2*(2*Td/N + Ts)),
+				(Kp*(4*Td/N + 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td + 2*Ts))/(4*Td/N + 2*Ts),
 				-(Kp*(- Ts*Ts/Ti + 4*Td/N + 4*Td))/(2*Td/N + Ts),
-				(Kp*(4*Td/N - 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td - 2*Ts))/(2*(2*Td/N + Ts)),
-				(4*Td/N)/(2*Td/N + Ts),
+				(Kp*(4*Td/N - 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td - 2*Ts))/(4*Td/N + 2*Ts),
+				-(4*Td/N)/(2*Td/N + Ts),
 				(2*Td/N - Ts)/(2*Td/N + Ts)
 		) {};
 

@@ -64,17 +64,17 @@ typedef control::classic::PID<double> CDoublePID;
 class PIDDoubleTest : public ::testing::Test {
  protected:
   CDoublePID controller;
-  PIDDoubleTest() : controller(1.0, 1.0, 1.0, 1.0, 1.0) {}
+  PIDDoubleTest() : controller(2.0, 1.0, 1.0, 1.0, 1.0) {}
 };
 
 
 TEST_F(PIDDoubleTest, SimplePID) {
-  std::vector<double> u;
-  std::vector<double> v = {2, 3, 4, 5, 6};
+  std::vector<double> u = {0, 1, 1, 2, 0};
+  std::vector<double> v = {0, 2.5, 4, 8.5, 7};
 
   // 5 steps
   for(int i = 0; i < 5; i++)
-    EXPECT_DOUBLE_EQ(controller.step(i), v[i]);
+    EXPECT_DOUBLE_EQ(controller.step(u[i]), v[i]);
 
 }
 
