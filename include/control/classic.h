@@ -149,8 +149,10 @@ namespace control { namespace classic {
 		// Time-step
 		const T Ts;
 
-		// Integral error
-		T e_int = 0;
+		// Registers for the IF
+		T e_z = 0;	// error
+		T u_z = 0;	// control signal
+		T e_int = 0; // integral
 
 		/**
 		 * @inheritdoc
@@ -165,6 +167,10 @@ namespace control { namespace classic {
 			// Add up the integral part to the error
 			u+= IF(e)/Ti;
 
+			// Shift the register values
+			u_z = u;
+			e_z = e;
+
 			return u;
 		}
 
@@ -172,6 +178,7 @@ namespace control { namespace classic {
 		 * (I) integrator
 		 *
 		 * Does only integrate when not clipping
+		 * Tustin (trapezodial approx)
 		 *
 		 * @param T error
 		 * @return T integral
@@ -180,7 +187,7 @@ namespace control { namespace classic {
 		{
 			// Integrate the error when not clipping
 			if( !AbstractController<T>::clipping ) {
-				e_int += e*Ts;
+				e_int += Ts*(e+e_z)/2;
 			}
 			return e_int;
 		}
@@ -212,7 +219,7 @@ namespace control { namespace classic {
 			u = PI<T>::control(e);
 
 			// Add up the derivative part
-			u+= Td/(Td/N+DF(e))*P<T>::control(e);
+			u+= Td*P<T>::control(e)/(Td/N+DF(e));
 
 			return u;
 		}
