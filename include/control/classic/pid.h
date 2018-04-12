@@ -1,16 +1,17 @@
 /*
- * classic.h
+ * pid.h
  *
  * Classic P/PI/PID control
  *
  * @author Tom Lankhorst
  */
 
-#ifndef CONTROL_CLASSIC_H_
-#define CONTROL_CLASSIC_H_
+#ifndef CONTROL_CLASSIC_PID_H_
+#define CONTROL_CLASSIC_PID_H_
 
 #include <limits>
 #include <algorithm>
+#include "../filter/biquad.h"
 
 namespace control { namespace classic {
 
@@ -102,6 +103,7 @@ namespace control { namespace classic {
 		 * @return T the raw output
 		 */
 		virtual T control(T e) = 0;
+
 	};
 
 	/**
@@ -133,106 +135,50 @@ namespace control { namespace classic {
 	};
 
 	/**
+	 * Proportional integral derivative controller
+	 */
+	template<typename T>
+	class PID : public AbstractController<T>
+	{
+	public:
+		PID(T Ts=1.0, T Kp=1.0, T Ti=max<T>(), T Td=0.0, T N=max<T>(), T Limit=max<T>()) : AbstractController<T>(Limit), B(
+				(Kp*(4*Td/N + 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td + 2*Ts))/(4*Td/N + 2*Ts),
+				-(Kp*(- Ts*Ts/Ti + 4*Td/N + 4*Td))/(2*Td/N + Ts),
+				(Kp*(4*Td/N - 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td - 2*Ts))/(4*Td/N + 2*Ts),
+				-(4*Td/N)/(2*Td/N + Ts),
+				(2*Td/N - Ts)/(2*Td/N + Ts)
+		) {};
+
+
+	protected:
+
+	  	/**
+	  	 * Biquad filter
+	  	 */
+	  	filter::Biquad<T> B;
+
+		/**
+		 * @inheritdoc
+		 */
+		T control(T e)
+		{
+			return B.step(e);
+		}
+
+	};
+
+
+	/**
 	 * Proportional + Integral controller
 	 */
 	template<typename T>
-	class PI : public P<T> {
+	class PI : public PID<T> {
 	public:
-		PI(T Ts_=1.0, T Kp_=1.0, T Ti_=max<T>(), T Limit_=max<T>())
-			: P<T>(Kp_, Limit_), Ti(Ti_), Ts(Ts_) {};
-		~PI() {};
-
-	protected:
-		// Integral time constant
-		const T Ti;
-
-		// Time-step
-		const T Ts;
-
-		// Integral error
-		T e_int = 0;
-
-		/**
-		 * @inheritdoc
-		 */
-		T control(T e)
-		{
-			T u;
-
-			// Get the proportional control
-			u = P<T>::control(e);
-
-			// Add up the integral part to the error
-			u+= IF(e)/Ti;
-
-			return u;
-		}
-
-		/**
-		 * (I) integrator
-		 *
-		 * Does only integrate when not clipping
-		 *
-		 * @param T error
-		 * @return T integral
-		 */
-		T IF(T e)
-		{
-			// Integrate the error when not clipping
-			if( !AbstractController<T>::clipping ) {
-				e_int += e*Ts;
-			}
-			return e_int;
-		}
+		PI(T Ts_=1.0, T Kp_=1.0, T Ti_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(), Limit_) {};
 	};
 
-	template<typename T>
-	class PID : public PI<T>
-	{
-	public:
-		PID(T Ts_=1.0, T Kp_=1.0, T Ti_=max<T>(), T Td_=0.0, T N_=max<T>(), T Limit_=max<T>())
-			: PI<T>(Kp_, Ti_, Ts_, Limit_), Td(Td_), N(N_) {};
-		~PID() {};
-
-	protected:
-		// Derivative time constant
-		const T Td;
-
-		// Filtering constant
-		const T N;
-
-		/**
-		 * @inheritdoc
-		 */
-		T control(T e)
-		{
-			T u;
-
-			// Get the PI control
-			u = PI<T>::control(e);
-
-			// Add up the derivative part
-			u+= Td/(Td/N+DF(e))*P<T>::control(e);
-
-			return u;
-		}
-
-		/**
-		 * (D) integrator
-		 *
-		 * Execute AFTER IF
-		 *
-		 * @param T error
-		 * @return T integral
-		 */
-		T DF(T e)
-		{
-			// Same value as (I) integrator
-			return PI<T>::e_int;
-		}
-	};
 
 } }
 
-#endif /* CONTROL_CLASSIC_H_ */
+#endif /* CONTROL_CLASSIC_PID_H_ */
 

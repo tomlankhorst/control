@@ -1,8 +1,12 @@
+# IntelliJ
+/.idea
+
 # Vim swap
 .*.swp
 
 # Build structure
 /build
+/cmake-build-*
 
 # Prerequisites
 *.d

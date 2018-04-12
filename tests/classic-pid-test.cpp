@@ -1,4 +1,4 @@
-#include "control/classic.h"
+#include "control/classic/pid.h"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
@@ -40,28 +40,44 @@ class PIDoubleTest : public ::testing::Test {
 
 
 TEST_F(PIDoubleTest, LimitErrTest) {
-  std::vector<double> u;
-  std::vector<double> v = {2.1, 2.2, 2.3, 2.3, 2.3};
+  std::vector<double> v = {2.1, 2.3, 2.5, 2.5, 2.5};
 
-  controller.setLimit(2.3);
+  controller.setLimit(2.5);
 
   // 10 steps
   for(int i = 0; i < 5; i++)
-    u.push_back(controller.step(1.0));
+    ASSERT_DOUBLE_EQ(controller.step(1.0), v[i]);
 
-  EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
 TEST_F(PIDoubleTest, ConstantErrTest) {
-  std::vector<double> u;
-  std::vector<double> v = {2.1, 2.2, 2.3, 2.4, 2.5};
+  std::vector<double> v = {2.1, 2.3, 2.5, 2.7, 2.9};
 
   // 10 steps
   for(int i = 0; i < 5; i++)
-    u.push_back(controller.step(1.0));
+    ASSERT_DOUBLE_EQ(controller.step(1.0), v[i]);
 
-  EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
+
+// PID controller K=1, Ti=Inf, Td=2, N=1, Ts=1
+typedef control::classic::PID<double> CDoublePID;
+class PIDDoubleTest : public ::testing::Test {
+ protected:
+  CDoublePID controller;
+  PIDDoubleTest() : controller(2.0, 1.0, 1.0, 1.0, 1.0) {}
+};
+
+
+TEST_F(PIDDoubleTest, SimplePID) {
+  std::vector<double> u = {0, 1, 1, 2, 0};
+  std::vector<double> v = {0, 2.5, 4, 8.5, 7};
+
+  // 5 steps
+  for(int i = 0; i < 5; i++)
+    EXPECT_DOUBLE_EQ(controller.step(u[i]), v[i]);
+
+}
+
 
 typedef control::classic::P<float> CFloatP;
 class PFloatTest : public ::testing::Test {
@@ -103,7 +119,7 @@ class PIIntTest : public ::testing::Test {
 
 TEST_F(PIIntTest, ConstantErrTest) {
   std::vector<int> u;
-  std::vector<int> v = {4, 6, 8, 10, 12};
+  std::vector<int> v = {4, 8, 12, 16, 20};
   
   for(int i = 0; i < 5; i++)
     u.push_back(controller.step(1));

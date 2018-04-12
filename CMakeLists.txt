@@ -43,7 +43,8 @@ if(TESTS)
 
   add_executable(controltests
 	./tests/gtest.cpp
-	./tests/classic-test.cpp)
+    tests/classic-pid-test.cpp
+    tests/biquad-test.cpp)
 
   target_link_libraries(controltests gtest_main gtest gmock)
 
