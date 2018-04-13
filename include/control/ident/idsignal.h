@@ -40,7 +40,8 @@ class PRBS {
   }
  protected:
   std::default_random_engine e;
-  std::uniform_int_distribution<T> d;
+  // The distribution still uses ints
+  std::uniform_int_distribution<int> d;
 };
 
 } }
