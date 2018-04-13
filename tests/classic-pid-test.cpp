@@ -127,4 +127,15 @@ TEST_F(PIIntTest, ConstantErrTest) {
   EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
+TEST_F(PIIntTest, IntegralErrTest) {
+  std::vector<int> x = {0, 1, 1, -1, -1, 0};
+  std::vector<int> v = {0, 4, 8,  4,  0, 0};
+  std::vector<int> u;
+
+  for(auto i : x)
+    u.push_back(controller.step(i));
+
+  EXPECT_THAT(u, ::testing::ContainerEq(v));
+}
+
 }  // namespace
