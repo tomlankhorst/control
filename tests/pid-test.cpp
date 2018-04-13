@@ -59,6 +59,13 @@ TEST_F(PIDoubleTest, ConstantErrTest) {
 
 }
 
+TEST(PIDouble2Test, NoIntTest){
+  CDoublePI controller(1.0, 2.0, control::classic::max<double>());
+  std::vector<double> v= {0,2,4,6,8};
+  for(int i = 0; i < 5; i++)
+    ASSERT_DOUBLE_EQ(controller.step(i), v[i]);
+}
+
 // PID controller K=1, Ti=Inf, Td=2, N=1, Ts=1
 typedef control::classic::PID<double> CDoublePID;
 class PIDDoubleTest : public ::testing::Test {

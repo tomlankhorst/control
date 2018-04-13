@@ -174,7 +174,7 @@ namespace control { namespace classic {
 	template<typename T>
 	class PI : public PID<T> {
 	public:
-		PI(T Ts_=1.0, T Kp_=1.0, T Ti_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(), Limit_) {};
+		PI(T Ts_=1, T Kp_=1, T Ti_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(), Limit_) {};
 	};
 
 
