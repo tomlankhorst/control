@@ -1,3 +1,10 @@
+/**
+ * idsignal.h
+ *
+ * System Identification Signals
+ *
+ * @author Tom Lankhorst
+ */
 #ifndef CONTROL_IDENT_IDSIGNAL_H
 #define CONTROL_IDENT_IDSIGNAL_H
 
@@ -5,14 +12,30 @@
 
 namespace control { namespace ident {
 
+/**
+ * PRBS
+ *
+ * Pseudo-Random-Binary-Signal
+ *
+ * Generates a sequence of -1 and 1
+ *
+ * @tparam T
+ */
 template <typename T>
-class prbs {
+class PRBS {
  public:
-  prbs() :
-      e(),
-      d(0,1)
-      {};
-  int get() {
+
+  /**
+   * Initialize the PRBS
+   */
+  PRBS() : e(), d(0,1) {};
+
+  /**
+   * Get a number
+   *
+   * @return T number
+   */
+  T get() {
     return d(e)*2-1;
   }
  protected:
