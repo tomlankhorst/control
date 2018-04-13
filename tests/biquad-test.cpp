@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include <cmath>
+
 namespace {
 
 typedef control::filter::Biquad<double> B;
@@ -48,7 +50,7 @@ TEST_F(MarginallyStableTest, StaysBounded){
 
   // Ensure that in 100 samples, value within 1
   for( int i = 0; i < 100; i++ )
-    ASSERT_LE(abs(b.step(0)),1);
+    ASSERT_LE(std::abs(b.step(0)),1);
 
 }
 
