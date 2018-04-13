@@ -5,6 +5,7 @@
 
 namespace control { namespace ident {
 
+template <typename T>
 class prbs {
  public:
   prbs() :
@@ -16,7 +17,7 @@ class prbs {
   }
  protected:
   std::default_random_engine e;
-  std::uniform_int_distribution<> d;
+  std::uniform_int_distribution<T> d;
 };
 
 } }
