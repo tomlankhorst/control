@@ -139,22 +139,24 @@ class PIIntTest : public ::testing::Test {
 };
 
 TEST_F(PIIntTest, ConstantErrTest) {
-  std::vector<int> u;
+  std::vector<int> u(5);
   std::vector<int> v = {4, 8, 12, 16, 20};
-  
-  for(int i = 0; i < 5; i++)
-    u.push_back(controller.step(1));
+  std::generate(u.begin(), u.end(), [this] { return controller.step(1); });
 
   EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
 
-TEST_F(PIIntTest, IntegralErrTest) {
+TEST_F(PIIntTest, IntegrlErrTest) {
+  // input vector
   std::vector<int> x = {0, 1, 1, -1, -1, 0};
+  // validation vector
   std::vector<int> v = {0, 4, 8,  4,  0, 0};
-  std::vector<int> u;
+  // test vector
+  std::vector<int> u(6);
 
-  for(auto i : x)
-    u.push_back(controller.step(i));
+  // fill test vector with results of input vector
+  auto it = x.begin();
+  std::generate(u.begin(), u.end(), [this,&it] { return controller.step(*it++); });
 
   EXPECT_THAT(u, ::testing::ContainerEq(v));
 }
