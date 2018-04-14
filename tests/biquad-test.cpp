@@ -72,4 +72,18 @@ TEST_F(MarginallyStableTest, PoleTest){
   EXPECT_TRUE(b.stable());
 }
 
+
+class UnnormalizedTest : public ::testing::Test {
+ protected:
+  B b, b_unnorm;
+  UnnormalizedTest() : b(1, 2, 3, 4, 5), b_unnorm(3, 6, 9, 3, 12, 15) {};
+};
+
+/**
+ * Test that these differently initialized biquads have the same poles
+ */
+TEST_F(UnnormalizedTest, EquivPolesTest){
+  EXPECT_EQ(b.poles(), b_unnorm.poles());
+}
+
 }  // namespace

@@ -48,6 +48,17 @@ namespace control { namespace filter {
      * @param T a2
      */
     Biquad(T b0, T b1, T b2, T a1, T a2) : B{b0, b1, b2}, A{a1, a2} {};
+
+    /**
+     * Initialize a biquad with unnormalized (6) coefficients
+     * @param b0
+     * @param b1
+     * @param b2
+     * @param a0
+     * @param a1
+     * @param a2
+     */
+    Biquad(T b0, T b1, T b2, T a0, T a1, T a2) : B{b0/a0, b1/a0, b2/a0}, A{a1/a0, a2/a0} {};
     ~Biquad() {};
 
     /**
