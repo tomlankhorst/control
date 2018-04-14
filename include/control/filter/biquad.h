@@ -10,6 +10,7 @@
 #define CONTROL_FILTER_BIQUAD_H_
 
 #include <complex>
+#include <tuple>
 
 namespace control { namespace filter {
 
