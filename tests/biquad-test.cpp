@@ -7,6 +7,7 @@
 namespace {
 
 typedef control::filter::Biquad<double> B;
+
 class BiquadTest : public ::testing::Test {
  protected:
   B b;
@@ -19,6 +20,10 @@ TEST_F(BiquadTest, SimpleBiquadTest) {
     EXPECT_DOUBLE_EQ( b.step(i), v[i] );
 }
 
+TEST_F(BiquadTest, StabilityTest) {
+  EXPECT_FALSE(b.stable());
+}
+
 TEST_F(BiquadTest, InfBiquadTest) {
   double Inf = std::numeric_limits<double>::infinity();
   double Nan = NAN;
@@ -27,6 +32,7 @@ TEST_F(BiquadTest, InfBiquadTest) {
   std::vector<double> v = { 0, 0, 0, 0, Inf };
   for( int i = 0; i < 5; i++ )
     EXPECT_DOUBLE_EQ( b.step(x[i]), v[i] );
+
 }
 
 /**
@@ -52,6 +58,18 @@ TEST_F(MarginallyStableTest, StaysBounded){
   for( int i = 0; i < 100; i++ )
     ASSERT_LE(std::abs(b.step(0)),1);
 
+}
+
+/**
+ * Determine the poles of the system
+ */
+TEST_F(MarginallyStableTest, PoleTest){
+  auto p = b.poles();
+  auto p1 = std::get<0>(p), p2 = std::get<1>(p);
+
+  EXPECT_DOUBLE_EQ((double)abs(p1), 1.0);
+  EXPECT_DOUBLE_EQ((double)abs(p2), 1.0);
+  EXPECT_TRUE(b.stable());
 }
 
 }  // namespace
