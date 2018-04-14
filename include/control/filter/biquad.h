@@ -14,10 +14,10 @@
 
 namespace control { namespace filter {
 
-  template <typename T>
+  template <typename T = float>
   using TC = std::complex<T>;
 
-  template <typename T>
+  template <typename T = float>
   using TCS = std::tuple<TC<T>, TC<T>>;
 
   /**
@@ -35,7 +35,7 @@ namespace control { namespace filter {
    *
    * @tparam T
    */
-  template<typename T>
+  template<typename T = float, typename S = const T>
   class Biquad {
    public:
     /**
@@ -59,6 +59,20 @@ namespace control { namespace filter {
      * @param a2
      */
     Biquad(T b0, T b1, T b2, T a0, T a1, T a2) : B{b0/a0, b1/a0, b2/a0}, A{a1/a0, a2/a0} {};
+
+    /**
+     * Initialize a biquad with ZPK
+     *
+     * @param TCS<T> z zeros
+     * @param TCS<T> p poles
+     * @param T k gain
+     */
+    Biquad(TCS<T> z, TCS<T> p, T k)
+    {
+      static_assert(!std::is_const<S>::value, "Storage type S must be non-const to use ZPK.");
+      std::tie(B[0], B[1], B[2], A[0], A[1]) = zpk2coef(z,p,k);
+    };
+
     ~Biquad() {};
 
     /**
@@ -89,11 +103,18 @@ namespace control { namespace filter {
      */
     TCS<T> poles()
     {
-      // sqrt(b^2 - 4*a*c)
-      TC<T> ds = std::sqrt( TC<T>(A[0]*A[0],0)-4*A[1] );
+      return solve((T)1, A[0], A[1]);
+    }
 
-      // (-b±ds)/2a
-      return std::make_tuple<TC<T>, TC<T>>((-A[0]+ds)/(T)2, (-A[0]-ds)/(T)2);
+    /**
+     * Zeros of the biquad
+     *
+     * @see poles()
+     * @return TCS<T>
+     */
+    TCS<T> zeros()
+    {
+      return solve(B[0], B[1], B[2]);
     }
 
     /**
@@ -124,13 +145,73 @@ namespace control { namespace filter {
      * Coefficients B
      * @var T[]
      */
-    const T B[3];
+    S B[3];
 
     /**
      * Coefficients A
      * @var T[]
      */
-    const T A[2];
+    S A[2];
+
+    /**
+     * Convert ZPK to coefs
+     */
+    std::tuple<T,T,T,T,T> zpk2coef(TCS<T> z, TCS<T> p, T k)
+    {
+      auto b = zero2coef(z);
+      auto a = zero2coef(p);
+      return std::make_tuple(
+          k,
+          k*std::get<0>(b),
+          k*std::get<1>(b),
+          std::get<0>(a),
+          std::get<1>(a)
+      );
+    }
+
+    /**
+     * Coefficients of quadratic poly. corresponding to zeros
+     *
+     * Gets the coefficients of the quadratic polynomial s.t. its solutions are p
+     *
+     * (x-z1)(x-z2) -> x^2-(z1+z2)+z1*z2
+     *
+     * @param TCS<T> z tuple of two complex Ts
+     * @return std::tuple<T,T> tuple of two Ts
+     */
+    std::tuple<T,T> zero2coef(TCS<T> z)
+    {
+      auto z1 = std::get<0>(z);
+      auto z2 = std::get<1>(z);
+
+      auto z1r = z1.real();
+      auto z1i = z1.imag();
+      auto z2r = z2.real();
+
+      // Assume this is a complex conjugate pair if p1 has imag
+      return z1i
+             ? std::make_tuple(-2*z1r, z1r*z1r+z1i*z1i)
+             : std::make_tuple(-z1r-z2r, z1r*z2r);
+    };
+
+    /**
+     * Solve a quadratic polynomial
+     *
+     *
+     */
+    TCS<T> solve(T a, T b, T c)
+    {
+      // Normalize
+      b /= a;
+      c /= a;
+
+      // sqrt(b^2 - 4*a*c)
+      TC<T> ds = std::sqrt( TC<T>(b*b,0)-4*c );
+
+      // (-b±ds)/2a
+      return std::make_tuple<TC<T>, TC<T>>((-b+ds)/(T)2, (-b-ds)/(T)2);
+     }
+
   };
 
 } }

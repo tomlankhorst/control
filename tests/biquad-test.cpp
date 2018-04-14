@@ -86,4 +86,18 @@ TEST_F(UnnormalizedTest, EquivPolesTest){
   EXPECT_EQ(b.poles(), b_unnorm.poles());
 }
 
+
+class ZPKTest : public ::testing::Test {
+ protected:
+  control::filter::Biquad<float, float> b, b_zpk;
+  ZPKTest() : b(1,3,2,2,2,1), b_zpk({-2, -1}, {{-0.5, +0.5}, {-0.5, -0.5}}, 0.5) {
+  };
+};
+
+TEST_F(ZPKTest, EquivalenceTest)
+{
+  EXPECT_EQ(b.zeros(), b_zpk.zeros());
+  EXPECT_EQ(b.poles(), b_zpk.poles());
+}
+
 }  // namespace
