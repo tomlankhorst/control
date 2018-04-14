@@ -9,7 +9,15 @@
 #ifndef CONTROL_FILTER_BIQUAD_H_
 #define CONTROL_FILTER_BIQUAD_H_
 
+#include <complex>
+
 namespace control { namespace filter {
+
+  template <typename T>
+  using TC = std::complex<T>;
+
+  template <typename T>
+  using TCS = std::tuple<TC<T>, TC<T>>;
 
   /**
    * Biquad
@@ -57,6 +65,39 @@ namespace control { namespace filter {
       wz[1] = x * B[2] - A[1] * y;
 
       return y;
+    }
+
+    /**
+     * Poles of the biquad
+     *
+     * Get a tuple of two complex values that represent the biquads poles.
+     * Poles of a biquad are the solution to the denominator, a quadratic equation.
+     *
+     * @return TCS<T>
+     */
+    TCS<T> poles()
+    {
+      // sqrt(b^2 - 4*a*c)
+      TC<T> ds = std::sqrt( TC<T>(A[0]*A[0],0)-4*A[1] );
+
+      // (-b±ds)/2a
+      return std::make_tuple((-A[0]+ds)/(T)2, (-A[0]-ds)/(T)2);
+    }
+
+    /**
+     * Stability of the biquad
+     *
+     * Checks stability through evaluating the magnitude of the poles
+     *
+     * @return true of stable
+     */
+    bool stable()
+    {
+      auto p = poles();
+
+      // Whether the magnitude of both poles is leq unity
+      return abs(std::get<0>(p)) <= (T)1
+          && abs(std::get<1>(p)) <= (T)1;
     }
 
    protected:
