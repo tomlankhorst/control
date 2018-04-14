@@ -149,6 +149,15 @@ namespace control { namespace classic {
 				(2*Td/N - Ts)/(2*Td/N + Ts)
 		) {};
 
+	/**
+	 * Poles of the PID controller
+	 *
+	 * @return control::filter::TCS<T> pair of complex T in tuple
+	 */
+	filter::TCS<T> poles()
+	{
+		return B.poles();
+	}
 
 	protected:
 

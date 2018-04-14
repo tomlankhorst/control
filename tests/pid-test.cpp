@@ -64,7 +64,7 @@ TEST(PIDouble2Test, NoIntTest){
     ASSERT_DOUBLE_EQ(controller.step(i), v[i]);
 }
 
-// PD controller K=2, Ti=1, Ts=0.1
+// PD controller Ts=0.5, Kd=1.0, Td=1.0, N=1.0
 typedef control::classic::PD<double> CDoublePD;
 class PDDoubleTest : public ::testing::Test {
  protected:
@@ -78,6 +78,13 @@ TEST_F(PDDoubleTest, SimplePDTest) {
 
   for(int i = 0; i < 5; i++)
     ASSERT_DOUBLE_EQ(controller.step(i), v[i]);
+
+  // Check that the poles are as expected (1,0.6)
+  auto p = controller.poles();
+  ASSERT_DOUBLE_EQ(std::get<0>(p).real(), 1);
+  ASSERT_DOUBLE_EQ(std::get<0>(p).imag(), 0);
+  ASSERT_DOUBLE_EQ(std::get<1>(p).real(), 0.6);
+  ASSERT_DOUBLE_EQ(std::get<1>(p).imag(), 0);
 }
 
 // PID controller K=1, Ti=Inf, Td=2, N=1, Ts=1

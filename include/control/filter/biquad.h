@@ -39,7 +39,7 @@ namespace control { namespace filter {
   class Biquad {
    public:
     /**
-     * Initialize a biquad filter
+     * Initialize a biquad filter with normalized (5) coefficients
      *
      * @param T b0
      * @param T b1
@@ -93,7 +93,7 @@ namespace control { namespace filter {
       TC<T> ds = std::sqrt( TC<T>(A[0]*A[0],0)-4*A[1] );
 
       // (-b±ds)/2a
-      return std::make_tuple((-A[0]+ds)/(T)2, (-A[0]-ds)/(T)2);
+      return std::make_tuple<TC<T>, TC<T>>((-A[0]+ds)/(T)2, (-A[0]-ds)/(T)2);
     }
 
     /**
@@ -101,7 +101,7 @@ namespace control { namespace filter {
      *
      * Checks stability through evaluating the magnitude of the poles
      *
-     * @return true of stable
+     * @return bool whether stable
      */
     bool stable()
     {
