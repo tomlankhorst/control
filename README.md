@@ -5,26 +5,73 @@ C++ Control
 
 Control functionality in C++
 
-Classic
+Classic PIDF control
 -------
 
-P, PI and PID control
+P, PI, PD and PID control:
 
 ```cpp
-#include <control/classic.h>
+#include <control/classic/pid.h>
 
-typedef control::classic::PI<double> PI;
+typedef control::classic::P<int> P;
+typedef control::classic::PI<float> PI;
+typedef control::classic::PI<double> PD;
+typedef control::classic::PID<double> PD;
 
 // ...
 
 // Ts = 1.0s, K = 1.0, Ti = 2.0
-PI controller(1.0, 1.0, 2.0);
+PI controller(1, 1, 2);
 
 for( int i = 0; i < 10; i++ )
   std::cout << controller.step(1.0) << std::endl;
 
 // 1.5 2.0 2.5 ...
 
+```
+
+Based on trapezoidal (Tustin) discretizations of the standard (serial) PID controller.
+
+PI, PD and PID are Biquads and thus inherit functionality like `.poles()`. 
+
+Biquad Digital Filters
+-----
+
+Biquads, or Second Order Sections (SOS), are transfer functions consisting of a ratio of two quadratic polynomials.
+With _z_ operator:
+
+```
+       b0 + b1 z^-1 + b2 z^-2
+H(z) = ----------------------
+        1 + a1 z^-1 + a2 z^-2
+``` 
+(normalized by a0)
+
+Biquads can be chained to obtain higher-order transfer-functions. 
+
+The implementation of Biquads in this library is based on the _Direct-form II transposed_ implementation. 
+
+```cpp
+// 2-nd order Butterworth LP filter with Wc =~ 0.1 (* half sample-rate)
+float b0 = 0.02, b1 = 0.04, b2 = 0.02;
+float a1 = -1.56, a2 = 0.64;
+Biquad<float> b(b0, b1, b2, a1, a2);
+
+for(int i=0; i<5; i++)
+    std::cout << b.step(i) << std::endl;
+// 0.02.., 0.09.., 0.22.., ...
+```
+
+System Identification
+-----
+
+### Pseudo-Random Binary Signal
+
+Expose a system to a PRBS to identify its transfer characteristics.
+
+```cpp
+control::ident::PRBS<int> P;
+auto i = P.get(); // 1 of -1
 ```
 
 Tests
