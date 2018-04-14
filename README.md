@@ -62,6 +62,16 @@ for(int i=0; i<5; i++)
 // 0.02.., 0.09.., 0.22.., ...
 ```
 
+Retrieving the poles of a Biquad:
+
+```cpp
+// Tuple of two std::complex<T>
+auto ps = b.poles();
+// std::complex<T>
+auto p1 = std::get<0>(ps);
+auto p2 = std::get<1>(ps);
+```
+
 System Identification
 -----
 
