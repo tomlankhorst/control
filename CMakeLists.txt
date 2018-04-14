@@ -12,7 +12,7 @@ include_directories(include)
 if(TESTS)
 
   # Download and unpack googletest at configure time
-  configure_file(gtest-cmakelists.txt.in googletest-download/CMakeLists.txt)
+  configure_file(cmake/gtest-cmakelists.txt.in googletest-download/CMakeLists.txt)
   execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
 	RESULT_VARIABLE result
 	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
