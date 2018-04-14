@@ -58,7 +58,7 @@ float a1 = -1.56, a2 = 0.64;
 Biquad<float> b(b0, b1, b2, a1, a2);
 
 for(int i=0; i<5; i++)
-    std::cout << b.step(i) << std::endl;
+    std::cout << b.step(1) << std::endl;
 // 0.02.., 0.09.., 0.22.., ...
 ```
 
