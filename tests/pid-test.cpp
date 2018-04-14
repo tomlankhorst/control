@@ -44,7 +44,6 @@ TEST_F(PIDoubleTest, LimitErrTest) {
 
   controller.setLimit(2.5);
 
-  // 10 steps
   for(int i = 0; i < 5; i++)
     ASSERT_DOUBLE_EQ(controller.step(1.0), v[i]);
 
@@ -53,7 +52,6 @@ TEST_F(PIDoubleTest, LimitErrTest) {
 TEST_F(PIDoubleTest, ConstantErrTest) {
   std::vector<double> v = {2.1, 2.3, 2.5, 2.7, 2.9};
 
-  // 10 steps
   for(int i = 0; i < 5; i++)
     ASSERT_DOUBLE_EQ(controller.step(1.0), v[i]);
 
@@ -62,6 +60,22 @@ TEST_F(PIDoubleTest, ConstantErrTest) {
 TEST(PIDouble2Test, NoIntTest){
   CDoublePI controller(1.0, 2.0, control::classic::max<double>());
   std::vector<double> v= {0,2,4,6,8};
+  for(int i = 0; i < 5; i++)
+    ASSERT_DOUBLE_EQ(controller.step(i), v[i]);
+}
+
+// PD controller K=2, Ti=1, Ts=0.1
+typedef control::classic::PD<double> CDoublePD;
+class PDDoubleTest : public ::testing::Test {
+ protected:
+  CDoublePD controller;
+  PDDoubleTest() : controller(0.5, 1.0, 1.0, 1.0) {}
+};
+
+
+TEST_F(PDDoubleTest, SimplePDTest) {
+  std::vector<double> v = {0.0, 1.8, 3.28, 4.568, 5.7408};
+
   for(int i = 0; i < 5; i++)
     ASSERT_DOUBLE_EQ(controller.step(i), v[i]);
 }

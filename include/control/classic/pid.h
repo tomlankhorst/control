@@ -177,6 +177,14 @@ namespace control { namespace classic {
 		PI(T Ts_=1, T Kp_=1, T Ti_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(), Limit_) {};
 	};
 
+	/**
+	 * Proportional + Derivative controller
+	 */
+	template<typename T>
+	class PD : public PID<T> {
+	public:
+		PD(T Ts_=1, T Kp_=1, T Td_=0, T N_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, max<T>(), Td_, N_, Limit_) {};
+	};
 
 } }
 
