@@ -13,10 +13,10 @@ P, PI, PD and PID control:
 ```cpp
 #include <control/classic/pid.h>
 
-typedef control::classic::P<int> P;
-typedef control::classic::PI<float> PI;
-typedef control::classic::PI<double> PD;
-typedef control::classic::PID<double> PD;
+using P   = control::classic::P<int>;
+using PI  = control::classic::PI<float>;
+using PD  = control::classic::PI<double>;
+using PID = control::classic::PID<double>;
 
 // ...
 
