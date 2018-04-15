@@ -11,7 +11,8 @@
 
 #include <limits>
 #include <algorithm>
-#include "../filter/biquad.h"
+#include "control/filter/biquad.h"
+#include "control/system/type.h"
 
 namespace control { namespace classic {
 
@@ -25,7 +26,7 @@ namespace control { namespace classic {
 	}
 
 	template <typename T>
-	class AbstractController {
+	class AbstractController : public system::SISO<T> {
 		static_assert(std::numeric_limits<T>::is_signed, "Signed type required");
 	public:
 		AbstractController(T Limit_=max<T>()) : Limit(Limit_) {};

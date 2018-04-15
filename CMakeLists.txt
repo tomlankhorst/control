@@ -45,6 +45,7 @@ if(TESTS)
 	./tests/gtest.cpp
     tests/pid-test.cpp
     tests/biquad-test.cpp
+    tests/biquad-cascade-test.cpp
     tests/prbs-test.cpp)
 
   target_link_libraries(controltests gtest_main gtest gmock)
