@@ -32,7 +32,7 @@ for( int i = 0; i < 10; i++ )
 
 Based on trapezoidal (Tustin) discretizations of the standard (serial) PID controller.
 
-PI, PD and PID are Biquads and thus inherit functionality like `.poles()`. 
+PI, PD and PID are use Biquads and expose functionality like `.poles()`. 
 
 Biquad Digital Filters
 -----
