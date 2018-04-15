@@ -20,7 +20,7 @@ namespace control { namespace filter {
   using TC = std::complex<T>;
 
   template <typename T = float>
-  using TCS = std::tuple<TC<T>, TC<T>>;
+  using TCS = std::pair<TC<T>, TC<T>>;
 
   /**
    * Biquad
@@ -215,7 +215,7 @@ namespace control { namespace filter {
       TC<T> ds = std::sqrt( TC<T>(b*b,0)-4*c );
 
       // (-b±ds)/2a
-      return std::make_tuple<TC<T>, TC<T>>((-b+ds)/(T)2, (-b-ds)/(T)2);
+      return std::make_pair<TC<T>, TC<T>>((-b+ds)/(T)2, (-b-ds)/(T)2);
      }
 
   };
