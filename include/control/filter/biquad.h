@@ -36,7 +36,7 @@ namespace control { namespace filter {
    *  Normalized by dividing all coefficients by a0.
    *
    * @tparam T arithmetic type
-   * @tparam S storage type (const T)
+   * @tparam S parameter type (const T)
    */
   template<typename T = float, typename S = const T>
   class Biquad : public system::SISO<T> {
