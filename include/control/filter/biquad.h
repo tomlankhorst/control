@@ -11,6 +11,8 @@
 
 #include <complex>
 #include <tuple>
+#include <array>
+#include "control/system/type.h"
 
 namespace control { namespace filter {
 
@@ -33,10 +35,11 @@ namespace control { namespace filter {
    *
    *  Normalized by dividing all coefficients by a0.
    *
-   * @tparam T
+   * @tparam T arithmetic type
+   * @tparam S storage type (const T)
    */
   template<typename T = float, typename S = const T>
-  class Biquad {
+  class Biquad : public system::SISO<T> {
    public:
     /**
      * Initialize a biquad filter with normalized (5) coefficients
@@ -72,8 +75,6 @@ namespace control { namespace filter {
       static_assert(!std::is_const<S>::value, "Storage type S must be non-const to use ZPK.");
       std::tie(B[0], B[1], B[2], A[0], A[1]) = zpk2coef(z,p,k);
     };
-
-    ~Biquad() {};
 
     /**
      * Step the biquad
@@ -188,7 +189,7 @@ namespace control { namespace filter {
       auto z1i = z1.imag();
       auto z2r = z2.real();
 
-      // Assume this is a complex conjugate pair if p1 has imag
+      // Assume this is a complex conjugate pair if p1 has imag part
       return z1i
              ? std::make_tuple(-2*z1r, z1r*z1r+z1i*z1i)
              : std::make_tuple(-z1r-z2r, z1r*z2r);
@@ -197,7 +198,12 @@ namespace control { namespace filter {
     /**
      * Solve a quadratic polynomial
      *
+     * ax^2+bx+c -> k(x-z1)(x-z2)
      *
+     * @param a T
+     * @param b T
+     * @param c T
+     * @return TCS<T> zeros
      */
     TCS<T> solve(T a, T b, T c)
     {
@@ -212,6 +218,69 @@ namespace control { namespace filter {
       return std::make_tuple<TC<T>, TC<T>>((-b+ds)/(T)2, (-b-ds)/(T)2);
      }
 
+  };
+
+
+  /**
+   * Type traits for deducing the typename of T and S of a biquad
+   * @tparam T
+   */
+  template<typename T>
+  struct inspect_types
+  {
+    typedef T arithmetic_type;
+    typedef T storage_type;
+  };
+
+  template<template<typename, typename> class B, typename T, typename S>
+  struct inspect_types<B<T,S>>
+  {
+    typedef T arithmetic_type;
+    typedef S storage_type;
+  };
+
+  /**
+   * Cascade of biquads
+   *
+   * Helps in realizing higher-order filters
+   *
+   * @tparam N number of sections
+   * @tparam B Biquad class
+   */
+  template<typename B=Biquad<>, size_t N = 1>
+  class BiquadCascade : public system::SISO<typename inspect_types<B>::arithmetic_type> {
+    using T = typename inspect_types<B>::arithmetic_type;
+    using BS = std::array<B,N>;
+   public:
+
+    /**
+     * Initialize chain with biquads
+     *
+     * @param bs biquads
+     */
+    template<typename... T>
+    BiquadCascade(T... bs) : bs{bs...} {}
+
+    /**
+     * Step the biquad chain one time
+     *
+     * @param u T input
+     * @return T output
+     */
+    T step(T u)
+    {
+      for( auto &b : bs )
+        u = b.step(u);
+
+      return u;
+    }
+
+   protected:
+
+    /**
+     * Container of biquads
+     */
+    BS bs;
   };
 
 } }
