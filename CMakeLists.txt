@@ -8,6 +8,7 @@ project(control CXX)
 set (CMAKE_CXX_STANDARD 11)
 
 include_directories(include)
+include_directories(thirdparty)
 
 if(TESTS)
 
@@ -46,7 +47,9 @@ if(TESTS)
     tests/pid-test.cpp
     tests/biquad-test.cpp
     tests/biquad-cascade-test.cpp
-    tests/prbs-test.cpp)
+    tests/prbs-test.cpp
+    tests/statespace-test.cpp
+    )
 
   target_link_libraries(controltests gtest_main gtest gmock)
 
