@@ -11,8 +11,8 @@
 
 #include <limits>
 #include <algorithm>
-#include "control/filter/biquad.h"
-#include "control/system/type.h"
+#include "../filter/biquad.h"
+#include "../system/type.h"
 
 namespace control { namespace classic {
 

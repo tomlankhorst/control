@@ -12,7 +12,7 @@
 #include <complex>
 #include <tuple>
 #include <array>
-#include "control/system/type.h"
+#include "../system/type.h"
 
 namespace control { namespace filter {
 
