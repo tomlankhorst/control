@@ -134,6 +134,15 @@ namespace control { namespace filter {
           && abs(std::get<1>(p)) <= (T)1;
     }
 
+    /**
+     * Reset the biquad
+     */
+    void reset()
+    {
+    	wz[0] = 0;
+    	wz[1] = 0;
+    }
+
    protected:
 
     /**

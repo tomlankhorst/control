@@ -68,6 +68,11 @@ namespace control { namespace classic {
 			Limit = limit;
 		}
 
+		/**
+		 * Reset the state of the controller
+		 */
+		virtual void reset() {};
+
 	protected:
 
 		/**
@@ -158,6 +163,14 @@ namespace control { namespace classic {
 	filter::TCS<T> poles()
 	{
 		return B.poles();
+	}
+
+	/**
+	 * Reset the state of the controller
+	 */
+	void reset()
+	{
+		B.reset();
 	}
 
 	protected:
