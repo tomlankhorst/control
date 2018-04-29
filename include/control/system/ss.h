@@ -21,7 +21,7 @@ public:
 	using TA = Eigen::Matrix<T, Nx, Nx>;
 	using TB = Eigen::Matrix<T, Nx, Nu>;
 	using TC = Eigen::Matrix<T, Ny, Nx>;
-	using TD = Eigen::Matrix<T, Ny, Ny>;
+	using TD = Eigen::Matrix<T, Ny, Nu>;
 
 private:
 	const TA A;
