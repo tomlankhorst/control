@@ -46,9 +46,12 @@ if(TESTS)
     tests/pid-test.cpp
     tests/biquad-test.cpp
     tests/biquad-cascade-test.cpp
-    tests/prbs-test.cpp)
+    tests/prbs-test.cpp
+    tests/ss-test.cpp)
 
-  target_link_libraries(controltests gtest_main gtest gmock)
+  find_package (Eigen3 3.3 REQUIRED)
+
+  target_link_libraries(controltests gtest_main gtest gmock Eigen3::Eigen)
 
   add_test(controltests controltests)
 
