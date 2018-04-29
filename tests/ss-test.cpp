@@ -1,7 +1,7 @@
 #include "control/system/ss.h"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <iostream>
 
 /**

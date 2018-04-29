@@ -8,7 +8,7 @@
 #ifndef INCLUDE_CONTROL_SYSTEM_SS_H_
 #define INCLUDE_CONTROL_SYSTEM_SS_H_
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 namespace control { namespace system {
 
