@@ -43,11 +43,11 @@ if(TESTS)
 
   add_executable(controltests
 	./tests/gtest.cpp
-    tests/pid-test.cpp
-    tests/biquad-test.cpp
-    tests/biquad-cascade-test.cpp
-    tests/prbs-test.cpp
-    tests/ss-test.cpp)
+    ./tests/pid-test.cpp
+    ./tests/biquad-test.cpp
+    ./tests/biquad-cascade-test.cpp
+    ./tests/prbs-test.cpp
+    ./tests/ss-test.cpp)
 
   find_package (Eigen3 3.3 REQUIRED)
 
