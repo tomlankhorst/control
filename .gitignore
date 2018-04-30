@@ -10,6 +10,7 @@
 # Build structure
 /build
 /cmake-build-*
+/compile_commands.json
 
 # Prerequisites
 *.d
