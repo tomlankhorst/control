@@ -42,7 +42,7 @@ public:
 	Ty step(Tu u){
 		x = A*x + B*u;
 		y = C*x + D*u;
-    return y;
+		return y;
 	}
 };
 
