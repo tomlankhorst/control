@@ -28,7 +28,7 @@ class PRBS {
   /**
    * Initialize the PRBS
    */
-  PRBS() : e(), d(0,1) {};
+  PRBS() : e(s), d(0,1) {};
 
   /**
    * Get a number
@@ -39,9 +39,12 @@ class PRBS {
     return d(e)*2-1;
   }
  protected:
-  std::default_random_engine e;
+  // A Mersenne-Twister generator
+  std::mt19937 e;
   // The distribution still uses ints
   std::uniform_int_distribution<int> d;
+  // The seed
+  std::seed_seq s{1,2,3,4,5,6,7,8};
 };
 
 } }
