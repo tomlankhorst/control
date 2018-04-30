@@ -1,5 +1,5 @@
-#ifndef CONTROL_IDENT_IDSIGNAL_H
-#define CONTROL_IDENT_IDSIGNAL_H
+#ifndef CONTROL_SYSTEM_TYPE_H
+#define CONTROL_SYSTEM_TYPE_H
 
 namespace control { namespace system {
 
@@ -17,4 +17,4 @@ namespace control { namespace system {
 
 } }
 
-#endif //CONTROL_IDENT_IDSIGNAL_H
+#endif //CONTROL_SYSTEM_TYPE_H
