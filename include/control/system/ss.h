@@ -1,14 +1,14 @@
 /*
  * ss.h
  *
- *  Created on: Apr 29, 2018
- *      Author: tomlankhorst
+ * State-space systems
  */
 
 #ifndef INCLUDE_CONTROL_SYSTEM_SS_H_
 #define INCLUDE_CONTROL_SYSTEM_SS_H_
 
 #include <Eigen/Dense>
+#include <cstddef>
 
 namespace control { namespace system {
 
@@ -25,7 +25,7 @@ namespace control { namespace system {
  * @tparam Ny number of outputs
  */
 template<typename T, size_t Nx, size_t Nu=1, size_t Ny=1>
-class ss {
+class SS {
 public:
 	using Tx = Eigen::Matrix<T, Nx, 1>;
 	using Tu = Eigen::Matrix<T, Nu, 1>;
@@ -37,7 +37,7 @@ public:
 
 private:
 	const TA A;
-  const TB B;
+    const TB B;
 	const TC C;
 	const TD D;
 
@@ -51,7 +51,7 @@ public:
    * @param TC C output matrix
    * @param TD D feed-through matrix
    */
-  ss(TA A, TB B, TC C, TD D) : A{A}, B{B}, C{C}, D{D} {
+  SS(TA A, TB B, TC C, TD D) : A{A}, B{B}, C{C}, D{D} {
     x = Tx::Zero();
     y = Ty::Zero();
   }

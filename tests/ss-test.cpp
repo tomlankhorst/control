@@ -12,7 +12,7 @@ namespace {
 
 class SSTest : public ::testing::Test {
 public:
-    using ss = control::system::ss<float,2>;
+    using ss = control::system::SS<float,2>;
 protected:
   ss *P; 
   SSTest() {
