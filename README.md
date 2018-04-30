@@ -84,6 +84,37 @@ control::ident::PRBS<int> P;
 auto i = P.get(); // 1 of -1
 ```
 
+State-Space Systems
+-----
+
+State-spaces allow representation of LTI discretized systems with `Nx` states, `Nu` inputs and `Ny` outputs. 
+
+```cpp
+// 2nd order SISO state-space
+using ss2 = control::system::ss<float,2>;
+
+ss2::TA A << 1, 1, 0, 1;
+ss2::TA B << 0, 1;
+ss2::TC C << 1, 0;
+ss2::TD D << 0;
+ss2 P(A,B,C,D);
+
+// 3th order MIMO state-space
+using ss3 = control::system::ss<float,3,2,2>;
+
+ss3::TA A << /* ... */ ;
+// ...
+
+ss3 P3(A,B,C,D);
+
+ss3::Tu u << 1, 2;
+auto y = P3.step(u);
+// y(0), y(1)
+```
+
+This functionality is based upon the Eigen3 Matrix math library. 
+Eigen takes care of target-specific vectorization!
+
 Tests
 -----
 
