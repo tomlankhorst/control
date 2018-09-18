@@ -124,3 +124,5 @@ cmake .. -DTESTS=ON
 make
 ./controltests
 ```
+
+There's a short [article about this library](https://tomlankhorst.nl/filtering-and-control-library/). 
