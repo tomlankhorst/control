@@ -1,5 +1,6 @@
 # Doxygen
 /docs
+/doxygen*
 
 # IntelliJ
 /.idea

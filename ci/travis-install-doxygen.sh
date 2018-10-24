@@ -7,6 +7,8 @@ FILE=$HOME/local/doxygen
 if [ -f $FILE ]; then
   echo "File $FILE exists. Skipping."
   exit 0
+else
+  echo "File $FILE does not exist. Building."
 fi
 
 wget -O doxygen.tar.gz https://github.com/doxygen/doxygen/archive/Release_1_8_14.tar.gz
