@@ -18,12 +18,16 @@ before_script:
   - cd build
   - cmake .. -DTESTS=ON -DEigen3_DIR=$HOME/local/share/eigen3/cmake
 
+cache:
+  directories:
+    - $HOME/local
+
 script:
   - make
   - ./controltests
   - cd ../
   - ci/travis-install-doxygen.sh
-  - doxygen Doxyfile
+  - $HOME/local/doxygen Doxyfile
 
 deploy:
   edge:
