@@ -2,6 +2,9 @@
 /docs
 /doxygen*
 
+# Eigen3
+/eigen*
+
 # IntelliJ
 /.idea
 
