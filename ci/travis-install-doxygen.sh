@@ -3,11 +3,12 @@
 
 set -ex
 
-wget http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.14.linux.bin.tar.gz
-tar -xvf doxygen-1.8.14.linux.bin.tar.gz
-rm doxygen-1.8.14.linux.bin.tar.gz
-cd doxygen-1.8.14
-mkdir -p $HOME/local
-cp bin/* $HOME/local
+git clone https://github.com/doxygen/doxygen.git
+cd doxygen
+mkdir build
+cd build
+cmake -G "Unix Makefiles" ..
+make
+sudo make install
 cd ..
-rm -r doxygen-1.8.14
+rm -rf doxygen
