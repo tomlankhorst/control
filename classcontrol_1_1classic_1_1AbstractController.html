@@ -74,6 +74,8 @@ $(function() {
 <div class="title">control::classic::AbstractController&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="pid_8h_source.html">pid.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for control::classic::AbstractController&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -90,8 +92,7 @@ Inheritance diagram for control::classic::AbstractController&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a29aa81e1c9e26e3cf888eb9e8e765495"><td class="memItemLeft" align="right" valign="top"><a id="a29aa81e1c9e26e3cf888eb9e8e765495"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>AbstractController</b> (T Limit_=max&lt; T &gt;())</td></tr>
+<tr class="memitem:a29aa81e1c9e26e3cf888eb9e8e765495"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcontrol_1_1classic_1_1AbstractController.html#a29aa81e1c9e26e3cf888eb9e8e765495">AbstractController</a> (T Limit_=max&lt; T &gt;())</td></tr>
 <tr class="separator:a29aa81e1c9e26e3cf888eb9e8e765495"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa29951918d1550dc8d437872199a7cdd"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcontrol_1_1classic_1_1AbstractController.html#aa29951918d1550dc8d437872199a7cdd">step</a> (T e)</td></tr>
 <tr class="separator:aa29951918d1550dc8d437872199a7cdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,6 +117,51 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a59ec4de411db92ad247f98af594ceaa0"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcontrol_1_1classic_1_1AbstractController.html#a59ec4de411db92ad247f98af594ceaa0">control</a> (T e)=0</td></tr>
 <tr class="separator:a59ec4de411db92ad247f98af594ceaa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class control::classic::AbstractController&lt; T &gt;</h3>
+
+<p>Base controller that implements limiting, resetting and stepping </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a29aa81e1c9e26e3cf888eb9e8e765495"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29aa81e1c9e26e3cf888eb9e8e765495">&#9670;&nbsp;</a></span>AbstractController()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcontrol_1_1classic_1_1AbstractController.html">control::classic::AbstractController</a>&lt; T &gt;::<a class="el" href="classcontrol_1_1classic_1_1AbstractController.html">AbstractController</a> </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>Limit_</em> = <code>max&lt;T&gt;()</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructor </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Limit_</td><td>maximum value of the output signal </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="af3fea32778406c1aef173be4032af04f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af3fea32778406c1aef173be4032af04f">&#9670;&nbsp;</a></span>clip()</h2>
@@ -300,7 +346,7 @@ template&lt;typename T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 24 2018 08:25:23 for tomlankhorst/control by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 24 2018 09:35:41 for tomlankhorst/control by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

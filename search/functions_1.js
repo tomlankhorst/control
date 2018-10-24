@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['clip',['clip',['../classcontrol_1_1classic_1_1AbstractController.html#af3fea32778406c1aef173be4032af04f',1,'control::classic::AbstractController']]],
-  ['control',['control',['../classcontrol_1_1classic_1_1AbstractController.html#a59ec4de411db92ad247f98af594ceaa0',1,'control::classic::AbstractController::control()'],['../classcontrol_1_1classic_1_1P.html#a774153160e9dbd0c70dae8c6bf7fc3eb',1,'control::classic::P::control()'],['../classcontrol_1_1classic_1_1PID.html#a3bec77d6a4553fb31d728771a2e21dfd',1,'control::classic::PID::control()']]]
+  ['biquad',['Biquad',['../classcontrol_1_1filter_1_1Biquad.html#aaeb1e5c9ebf136a9c4f53868ed02cddf',1,'control::filter::Biquad::Biquad(T b0, T b1, T b2, T a1, T a2)'],['../classcontrol_1_1filter_1_1Biquad.html#ac69276795759c9f9a4ff5777d79cd5ba',1,'control::filter::Biquad::Biquad(T b0, T b1, T b2, T a0, T a1, T a2)'],['../classcontrol_1_1filter_1_1Biquad.html#a6f2ed07c66883acd0e6c3c4c187c2629',1,'control::filter::Biquad::Biquad(TCS&lt; T &gt; z, TCS&lt; T &gt; p, T k)']]],
+  ['biquadcascade',['BiquadCascade',['../classcontrol_1_1filter_1_1BiquadCascade.html#a24c4ef96831a5c2761033d022fe54d3b',1,'control::filter::BiquadCascade']]]
 ];
