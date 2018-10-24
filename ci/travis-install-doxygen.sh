@@ -17,8 +17,7 @@ rm doxygen.tar.gz
 cd doxygen-Release_1_8_14
 mkdir build
 cd build
-cmake -G "Unix Makefiles" ..
+cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$HOME/local ..
 make
-mkdir -p $HOME/local
-mv bin/* $HOME/local
+make install
 cd ..
