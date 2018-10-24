@@ -10,7 +10,8 @@
 
 #include <random>
 
-namespace control { namespace ident {
+namespace control {
+namespace ident {
 
 /**
  * PRBS
@@ -21,22 +22,22 @@ namespace control { namespace ident {
  *
  * @tparam T
  */
-template <typename T>
+template<typename T>
 class PRBS {
  public:
 
   /**
    * Initialize the PRBS
    */
-  PRBS() : e(), d(0,1) {};
+  PRBS() : e(), d(0, 1) {};
 
   /**
-   * Get a number
+   * Get an integer, either -1 or 1
    *
-   * @return T number
+   * @return T number in {-1,1}
    */
   T get() {
-    return d(e)*2-1;
+    return d(e) ? 1 : -1;
   }
  protected:
   std::default_random_engine e;
@@ -44,6 +45,7 @@ class PRBS {
   std::uniform_int_distribution<int> d;
 };
 
-} }
+}
+}
 
 #endif //CONTROL_IDENT_IDSIGNAL_H

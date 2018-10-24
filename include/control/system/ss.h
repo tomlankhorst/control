@@ -10,7 +10,8 @@
 
 #include <Eigen/Dense>
 
-namespace control { namespace system {
+namespace control {
+namespace system {
 
 /**
  * State-space 
@@ -24,24 +25,24 @@ namespace control { namespace system {
  * @tparam Nu number of inputs
  * @tparam Ny number of outputs
  */
-template<typename T, size_t Nx, size_t Nu=1, size_t Ny=1>
+template<typename T, size_t Nx, size_t Nu = 1, size_t Ny = 1>
 class ss {
-public:
-	using Tx = Eigen::Matrix<T, Nx, 1>;
-	using Tu = Eigen::Matrix<T, Nu, 1>;
-	using Ty = Eigen::Matrix<T, Ny, 1>;
-	using TA = Eigen::Matrix<T, Nx, Nx>;
-	using TB = Eigen::Matrix<T, Nx, Nu>;
-	using TC = Eigen::Matrix<T, Ny, Nx>;
-	using TD = Eigen::Matrix<T, Ny, Nu>;
+ public:
+  using Tx = Eigen::Matrix<T, Nx, 1>;
+  using Tu = Eigen::Matrix<T, Nu, 1>;
+  using Ty = Eigen::Matrix<T, Ny, 1>;
+  using TA = Eigen::Matrix<T, Nx, Nx>;
+  using TB = Eigen::Matrix<T, Nx, Nu>;
+  using TC = Eigen::Matrix<T, Ny, Nx>;
+  using TD = Eigen::Matrix<T, Ny, Nu>;
 
-private:
-	const TA A;
+ private:
+  const TA A;
   const TB B;
-	const TC C;
-	const TD D;
+  const TC C;
+  const TD D;
 
-public:
+ public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
   /**
    * Construct a new SS and initialize the output and state to zero
@@ -59,12 +60,12 @@ public:
   /**
    * @var Tx current state of the system
    */
-	Tx x;
+  Tx x;
 
   /**
    * @var Ty current output of the system
    */
-	Ty y;
+  Ty y;
 
   /**
    * Step the system
@@ -72,14 +73,14 @@ public:
    * @param Tu u input 
    * @return Ty output
    */
-	Ty step(Tu u){
-		x = A*x + B*u;
-		y = C*x + D*u;
-		return y;
-	}
+  Ty step(Tu u) {
+    x = A * x + B * u;
+    y = C * x + D * u;
+    return y;
+  }
 };
 
-} }
-
+}
+}
 
 #endif /* INCLUDE_CONTROL_SYSTEM_SS_H_ */

@@ -14,202 +14,244 @@
 #include "../filter/biquad.h"
 #include "../system/type.h"
 
-namespace control { namespace classic {
+namespace control {
+namespace classic {
 
-	/**
-	 * Helper that returns either infinity or maximum value
-	 */
-	template <typename T>
-	constexpr T max(){
-		return std::numeric_limits<T>::has_infinity
-				? std::numeric_limits<T>::infinity() : std::numeric_limits<T>::max();
-	}
+/**
+ * Helper that returns the maximum value of the type or infinity when present
+ * @tparam T
+ * @return
+ */
+template<typename T>
+constexpr T max() {
+  return std::numeric_limits<T>::has_infinity
+         ? std::numeric_limits<T>::infinity() : std::numeric_limits<T>::max();
+}
 
-	template <typename T>
-	class AbstractController : public system::SISO<T> {
-		static_assert(std::numeric_limits<T>::is_signed, "Signed type required");
-	public:
-		AbstractController(T Limit_=max<T>()) : Limit(Limit_) {};
-		virtual ~AbstractController() {};
+/**
+ * Base controller that implements limiting, resetting and stepping
+ * @tparam T
+ */
+template<typename T>
+class AbstractController : public system::SISO<T> {
+  static_assert(std::numeric_limits<T>::is_signed, "Signed type required");
+ public:
+  /**
+   * Constructor
+   * @param Limit_ maximum value of the output signal
+   */
+  AbstractController(T Limit_ = max<T>()) : Limit(Limit_) {};
 
-		// Limit
-		T Limit;
+  virtual ~AbstractController() {};
 
-		// Clipping status
-		bool clipping = false;
+  // Limit
+  T Limit;
 
-		/**
-		 * Steps the controller one time-step
-		 *
-		 * @param T e the error value
-		 * @return T the controller output
-		 */
-		T step(T e)
-		{
-			T u;
+  // Clipping status
+  bool clipping = false;
 
-			// Get the control effort
-			u = control(e);
+  /**
+   * Steps the controller one time-step
+   *
+   * @param T e the error value
+   * @return T the controller output
+   */
+  T step(T e) {
+    T u;
 
-			// Clip the output
-			u = clip(u);
+    // Get the control effort
+    u = control(e);
 
-			// Return the output
-			return u;
-		};
+    // Clip the output
+    u = clip(u);
 
-		/**
-		 * Update the output limit
-		 *
-		 * @param T limit
-		 */
-		void setLimit(T limit)
-		{
-			Limit = limit;
-		}
+    // Return the output
+    return u;
+  };
 
-		/**
-		 * Reset the state of the controller
-		 */
-		virtual void reset() {};
+  /**
+   * Update the output limit
+   *
+   * @param T limit
+   */
+  void setLimit(T limit) {
+    Limit = limit;
+  }
 
-	protected:
+  /**
+   * Reset the state of the controller
+   */
+  virtual void reset() {};
 
-		/**
-		 * Limit the output
-		 *
-		 * @param T u
-		 * @return T
-		 */
-		T clip(T u)
-		{
-			if(Limit==std::numeric_limits<T>::infinity()){
-				return u;
-			}
+ protected:
 
-			// Determine if the signal is in range
-			if( !clipping && (u > Limit || u < -Limit) ){
-				clipping = true;
-			} else if ( clipping && ( u >= -Limit && u <= Limit) ) {
-				clipping = false;
-			}
+  /**
+   * Limit the output
+   *
+   * @param T u
+   * @return T
+   */
+  T clip(T u) {
+    if (Limit == std::numeric_limits<T>::infinity()) {
+      return u;
+    }
 
-			// If limiting, then clip to min / max
-			if( clipping ) {
-				u = std::max(-Limit, std::min(Limit, u));
-			}
+    // Determine if the signal is in range
+    if (!clipping && (u > Limit || u < -Limit)) {
+      clipping = true;
+    } else if (clipping && (u >= -Limit && u <= Limit)) {
+      clipping = false;
+    }
 
-			return u;
-		}
+    // If limiting, then clip to min / max
+    if (clipping) {
+      u = std::max(-Limit, std::min(Limit, u));
+    }
 
-		/**
-		 * Retrieves the control output, unclipped
-		 *
-		 * @param T e the error
-		 * @return T the raw output
-		 */
-		virtual T control(T e) = 0;
+    return u;
+  }
 
-	};
+  /**
+   * Retrieves the control output, unclipped
+   *
+   * @param T e the error
+   * @return T the raw output
+   */
+  virtual T control(T e) = 0;
 
-	/**
-	 * Proportional controller
-	 */
-	template <typename T>
-	class P : public AbstractController<T> {
-	public:
-		P(T Kp_=1.0, T Limit_=max<T>()) : AbstractController<T>(Limit_), Kp(Kp_) {};
-		~P() {};
+};
 
-		// Proportional gain
-		const T Kp;
+/**
+ * Proportional controller
+ */
+template<typename T>
+class P : public AbstractController<T> {
+ public:
 
-	protected:
-		/**
-		 * @inheritdoc
-		 */
-		T control(T e)
-		{
-			// The output of the controller
-			T u;
+  /**
+   * Constructor of proportional controller
+   *
+   * @param Kp_ Proportional gain
+   * @param Limit_ Maximum output value
+   */
+  P(T Kp_ = 1.0, T Limit_ = max<T>()) : AbstractController<T>(Limit_), Kp(Kp_) {};
 
-			// Proportional gain
-			u = Kp*e;
+  ~P() {};
 
-			return u;
-		};
-	};
+  // Proportional gain
+  const T Kp;
 
-	/**
-	 * Proportional integral derivative controller
-	 */
-	template<typename T>
-	class PID : public AbstractController<T>
-	{
-	public:
-		PID(T Ts=1.0, T Kp=1.0, T Ti=max<T>(), T Td=0.0, T N=max<T>(), T Limit=max<T>()) : AbstractController<T>(Limit), B(
-				(Kp*(4*Td/N + 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td + 2*Ts))/(4*Td/N + 2*Ts),
-				-(Kp*(- Ts*Ts/Ti + 4*Td/N + 4*Td))/(2*Td/N + Ts),
-				(Kp*(4*Td/N - 2*Td*Ts/Ti/N + Ts*Ts/Ti + 4*Td - 2*Ts))/(4*Td/N + 2*Ts),
-				-(4*Td/N)/(2*Td/N + Ts),
-				(2*Td/N - Ts)/(2*Td/N + Ts)
-		) {};
+ protected:
+  /**
+   * @inheritdoc
+   */
+  T control(T e) {
+    // The output of the controller
+    T u;
 
-	/**
-	 * Poles of the PID controller
-	 *
-	 * @return control::filter::TCS<T> pair of complex T in tuple
-	 */
-	filter::TCS<T> poles()
-	{
-		return B.poles();
-	}
+    // Proportional gain
+    u = Kp * e;
 
-	/**
-	 * Reset the state of the controller
-	 */
-	void reset()
-	{
-		B.reset();
-	}
+    return u;
+  };
+};
 
-	protected:
+/**
+ * Proportional integral derivative controller
+ */
+template<typename T>
+class PID : public AbstractController<T> {
+ public:
 
-	  	/**
-	  	 * Biquad filter
-	  	 */
-	  	filter::Biquad<T> B;
+  /**
+   * Constructor of PID controller
+   * @param Ts Timestep (s)
+   * @param Kp Proportional gain
+   * @param Ti Integrator time-constant (s)
+   * @param Td Differentiator time-constant (s)
+   * @param N Filter coefficicent
+   * @param Limit Maximum output
+   */
+  PID(T Ts = 1.0, T Kp = 1.0, T Ti = max<T>(), T Td = 0.0, T N = max<T>(), T Limit = max<T>())
+      : AbstractController<T>(Limit), B(
+      (Kp * (4 * Td / N + 2 * Td * Ts / Ti / N + Ts * Ts / Ti + 4 * Td + 2 * Ts)) / (4 * Td / N + 2 * Ts),
+      -(Kp * (-Ts * Ts / Ti + 4 * Td / N + 4 * Td)) / (2 * Td / N + Ts),
+      (Kp * (4 * Td / N - 2 * Td * Ts / Ti / N + Ts * Ts / Ti + 4 * Td - 2 * Ts)) / (4 * Td / N + 2 * Ts),
+      -(4 * Td / N) / (2 * Td / N + Ts),
+      (2 * Td / N - Ts) / (2 * Td / N + Ts)
+  ) {};
 
-		/**
-		 * @inheritdoc
-		 */
-		T control(T e)
-		{
-			return B.step(e);
-		}
+  /**
+   * Poles of the PID controller
+   *
+   * @return control::filter::TCS<T> pair of complex T in tuple
+   */
+  filter::TCS<T> poles() {
+    return B.poles();
+  }
 
-	};
+  /**
+   * Reset the state of the controller
+   */
+  void reset() {
+    B.reset();
+  }
 
+ protected:
 
-	/**
-	 * Proportional + Integral controller
-	 */
-	template<typename T>
-	class PI : public PID<T> {
-	public:
-		PI(T Ts_=1, T Kp_=1, T Ti_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(), Limit_) {};
-	};
+  /**
+   * Biquad filter
+   */
+  filter::Biquad<T> B;
 
-	/**
-	 * Proportional + Derivative controller
-	 */
-	template<typename T>
-	class PD : public PID<T> {
-	public:
-		PD(T Ts_=1, T Kp_=1, T Td_=0, T N_=max<T>(), T Limit_=max<T>()) : PID<T>(Ts_, Kp_, max<T>(), Td_, N_, Limit_) {};
-	};
+  /**
+   * @inheritdoc
+   */
+  T control(T e) {
+    return B.step(e);
+  }
 
-} }
+};
+
+/**
+ * Proportional + Integral controller
+ */
+template<typename T>
+class PI : public PID<T> {
+ public:
+
+  /**
+   * Proportional-integral controller
+   * @param Ts_ Time-step (s)
+   * @param Kp_ Proportial gain
+   * @param Ti_ Integrator time-constant (s)
+   * @param Limit_ Maximum output value
+   */
+  PI(T Ts_ = 1, T Kp_ = 1, T Ti_ = max<T>(), T Limit_ = max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(),
+                                                                           Limit_) {};
+};
+
+/**
+ * Proportional + Derivative controller
+ */
+template<typename T>
+class PD : public PID<T> {
+ public:
+
+  /**
+   * Proportional-derivative controller
+   * @param Ts_ Time-step (s)
+   * @param Kp_ Proportial gain
+   * @param Td Differentiator time-constant (s)
+   * @param N Filter coefficicent
+   * @param Limit_ Maximum output value
+   */
+  PD(T Ts_ = 1, T Kp_ = 1, T Td_ = 0, T N_ = max<T>(), T Limit_ = max<T>()) : PID<T>(Ts_, Kp_, max<T>(), Td_,
+                                                                                     N_, Limit_) {};
+};
+
+}
+}
 
 #endif /* CONTROL_CLASSIC_PID_H_ */
 
