@@ -1,6 +1,17 @@
 language: cpp
+
 sudo: false
+
 dist: trusty
+
+branches:
+  only:
+    - master
+
+addons:
+  apt:
+    packages:
+      - doxygen
 
 compiler:
   - clang
@@ -15,3 +26,13 @@ before_script:
 script:
   - make
   - ./controltests
+  - doxygen Doxyfile
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: docs/html
+  keep-history: true
+  github_token: $GH_REPO_TOKEN
+  on:
+    branch: master
