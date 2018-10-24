@@ -23,7 +23,7 @@ script:
   - ./controltests
   - cd ../
   - ci/travis-install-doxygen.sh
-  - ~/local/doxygen Doxyfile
+  - doxygen Doxyfile
 
 deploy:
   edge:
