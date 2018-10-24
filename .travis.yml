@@ -30,6 +30,8 @@ script:
   - doxygen Doxyfile
 
 deploy:
+  edge:
+    branch: v1.8.47
   provider: pages
   skip_cleanup: true
   local_dir: docs/html
