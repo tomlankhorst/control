@@ -8,11 +8,6 @@ branches:
   only:
     - master
 
-addons:
-  apt:
-    packages:
-      - doxygen
-
 compiler:
   - clang
   - gcc
@@ -27,7 +22,8 @@ script:
   - make
   - ./controltests
   - cd ../
-  - doxygen Doxyfile
+  - ci/travis-install-doxygen.sh
+  - ~/local/doxygen Doxyfile
 
 deploy:
   edge:
