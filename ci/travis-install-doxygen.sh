@@ -11,6 +11,6 @@ mkdir build
 cd build
 cmake -G "Unix Makefiles" ..
 make
-sudo make install
+make install
 cd ..
 rm -rf doxygen-Release_1_8_14
