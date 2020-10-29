@@ -2,7 +2,7 @@ language: cpp
 
 sudo: false
 
-dist: trusty
+dist: focal
 
 branches:
   only:
@@ -16,7 +16,7 @@ before_script:
   - ci/travis-install-eigen3.sh
   - mkdir build
   - cd build
-  - cmake .. -DTESTS=ON -DEigen3_DIR=$HOME/local/share/eigen3/cmake
+  - cmake .. -DTESTS=ON -DCMAKE_BUILD_TYPE=Release -DEigen3_DIR=$HOME/local/share/eigen3/cmake
 
 cache:
   directories:

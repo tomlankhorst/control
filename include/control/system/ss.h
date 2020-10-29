@@ -1,17 +1,12 @@
 /*
- * ss.h
- *
- *  Created on: Apr 29, 2018
- *      Author: tomlankhorst
+ * State-space
  */
 
-#ifndef INCLUDE_CONTROL_SYSTEM_SS_H_
-#define INCLUDE_CONTROL_SYSTEM_SS_H_
+#pragma once
 
 #include <Eigen/Dense>
 
-namespace control {
-namespace system {
+namespace control::system {
 
 /**
  * State-space 
@@ -81,6 +76,4 @@ class ss {
 };
 
 }
-}
 
-#endif /* INCLUDE_CONTROL_SYSTEM_SS_H_ */

@@ -1,8 +1,10 @@
-#ifndef CONTROL_IDENT_IDSIGNAL_H
-#define CONTROL_IDENT_IDSIGNAL_H
+/**
+ * Type helpers
+ */
 
-namespace control {
-namespace system {
+#pragma once
+
+namespace control::system {
 
 /**
  * Single-input-single-output
@@ -23,6 +25,3 @@ class SISO {
 };
 
 }
-}
-
-#endif //CONTROL_IDENT_IDSIGNAL_H
