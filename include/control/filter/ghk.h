@@ -10,28 +10,28 @@ namespace control::ghk {
 
 // g h k = alpha beta gamma/2
 template<typename ValueType>
-struct ghk {
+struct coeff {
   ValueType g, h, k;
 };
 
-// x v a = x, dx, ddx
+// x dx ddx
 template<typename ValueType>
-struct xva {
-  ValueType x, v, a;
+struct state {
+  ValueType x, dx, ddx;
 };
 
-namespace param {
+namespace parameterize {
 
 // Get g h k parameters from alpha beta gamma
 template<typename ValueType>
-constexpr ghk<ValueType> abc(ValueType a, ValueType b, ValueType c) {
+constexpr coeff<ValueType> abc(ValueType a, ValueType b, ValueType c) {
   return { a, b, c/2 };
 }
 
 // Get g h k parameters from critical dampened theta
 // Eli Brookner DSc, Tracking and Kalman Filtering Made Easy - g–h and g–h–k Filters
 template<typename ValueType>
-constexpr ghk<ValueType> critical_dampened(ValueType th) {
+constexpr coeff<ValueType> critical_dampened(ValueType th) {
   return {
       1-std::pow(th,3),
       3*(1-th*th)*(1-th)/2,
@@ -42,7 +42,7 @@ constexpr ghk<ValueType> critical_dampened(ValueType th) {
 // Get g h k parameters from optimal guassian (Kalman) lambda
 // J. E. Gray and W. Murray, "A derivation of an analytic expression for the tracking index for the alpha-beta-gamma filter," in IEEE Transactions on Aerospace and Electronic Systems, vol. 29, no. 3, pp. 1064-1065, July 1993, doi: 10.1109/7.220956.
 template<typename ValueType>
-constexpr ghk<ValueType> optimal_gaussian(ValueType l) {
+constexpr coeff<ValueType> optimal_gaussian(ValueType l) {
   auto b = l/2-3;
   auto c = l/2+3;
   auto d = -1;
@@ -64,7 +64,7 @@ constexpr ghk<ValueType> optimal_gaussian(ValueType l) {
  * @param T sample-time or time-step
  */
 template<typename ValueType>
-constexpr ghk<ValueType> optimal_gaussian(ValueType s_w, ValueType s_v, ValueType T) {
+constexpr coeff<ValueType> optimal_gaussian(ValueType s_w, ValueType s_v, ValueType T) {
   auto l = s_w*T*T/s_v;
   return optimal_gaussian<ValueType>(l);
 }
@@ -73,27 +73,27 @@ constexpr ghk<ValueType> optimal_gaussian(ValueType s_w, ValueType s_v, ValueTyp
 
 template<typename ValueType>
 struct result {
-  xva<ValueType> update, prediction;
+  state<ValueType> correction, prediction;
 };
 
 template<typename ValueType>
-result<ValueType> update_predict(const ghk<ValueType>& ghk, xva<ValueType> current, ValueType z, ValueType T) {
-  auto& [g,h,k] = ghk;
+result<ValueType> correct_predict(const coeff<ValueType>& coeff, state<ValueType> current, ValueType z, ValueType T) {
+  auto& [g,h,k] = coeff;
 
   // update with residual
   auto r = z - current.x;
 
   current.x += g*r;
-  current.v += h/T*r;
-  current.a += 2*k/(T*T)*r;
+  current.dx += h/T*r;
+  current.ddx += 2*k/(T*T)*r;
 
-  auto update = current;
+  auto correct = current;
 
   // predict with current value
-  current.x += current.v*T+current.a*T*T/2;
-  current.v += current.a*T;
+  current.x += current.dx*T+current.ddx*T*T/2;
+  current.dx += current.ddx*T;
 
-  return { update, current };
+  return {correct, current };
 }
 
 }

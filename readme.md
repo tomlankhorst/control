@@ -72,6 +72,24 @@ auto p1 = std::get<0>(ps);
 auto p2 = std::get<1>(ps);
 ```
 
+g-h-k filters (alpha-beta-gamma filters)
+-----
+Implements [g-h-k filter](https://en.wikipedia.org/wiki/Alpha_beta_filter).
+
+```cpp
+using namespace control::ghk;
+                         
+// initial conditions x0, dx0, ddx0
+auto x = state<double>{ 1, 0, 0 };
+auto Ts = 0.01; 
+// sigma_w and sigma_v noise variance
+auto c = parameterize::optimal_gaussian(0.1, 1, Ts);
+                                            
+auto z = 0.5; // measurement
+auto& [corr, pred] = correct_predict(c, x, z, Ts);
+x = corr;                                         
+```
+
 System Identification
 -----
 
