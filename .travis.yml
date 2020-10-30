@@ -1,8 +1,7 @@
 language: cpp
 
-sudo: false
-
-dist: trusty
+os: linux
+dist: focal
 
 branches:
   only:
@@ -13,30 +12,29 @@ compiler:
   - gcc
 
 before_script:
-  - ci/travis-install-eigen3.sh
-  - mkdir build
-  - cd build
-  - cmake .. -DTESTS=ON -DEigen3_DIR=$HOME/local/share/eigen3/cmake
+  - sudo apt-get install -y libeigen3-dev doxygen ninja-build
 
 cache:
   directories:
     - $HOME/local
 
 script:
-  - make
+  - mkdir build
+  - cd build
+  - cmake .. -DTESTS=ON -DCMAKE_BUILD_TYPE=Release -GNinja
+  - ninja
   - ./controltests
   - cd ../
-  - ci/travis-install-doxygen.sh
-  - $HOME/local/doxygen Doxyfile
+  - doxygen Doxyfile
 
 deploy:
+  strategy: git
   edge:
     branch: v1.8.47
   provider: pages
-  skip_cleanup: true
   local_dir: docs/html
-  keep-history: true
-  github_token: $GH_REPO_TOKEN
+  keep_history: true
+  token: $GH_REPO_TOKEN
   on:
     branch: master
     condition: $CC = gcc

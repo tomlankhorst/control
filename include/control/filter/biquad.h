@@ -1,21 +1,16 @@
 /*
- * biquad.h
- *
  * Bi-quadratic filters
- *
- * @author Tom Lankhorst
 */
 
-#ifndef CONTROL_FILTER_BIQUAD_H_
-#define CONTROL_FILTER_BIQUAD_H_
+#pragma once
 
+#include <array>
 #include <complex>
 #include <tuple>
-#include <array>
-#include "../system/type.h"
 
-namespace control {
-namespace filter {
+#include "control/system/type.h"
+
+namespace control::filter {
 
 template<typename T = float>
 using TC = std::complex<T>;
@@ -282,7 +277,4 @@ class BiquadCascade : public system::SISO<typename inspect_types<B>::arithmetic_
 };
 
 }
-}
-
-#endif /* CONTROL_FILTER_BIQUAD_H_ */
 

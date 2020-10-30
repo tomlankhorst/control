@@ -1,17 +1,11 @@
 /**
- * idsignal.h
- *
  * System Identification Signals
- *
- * @author Tom Lankhorst
  */
-#ifndef CONTROL_IDENT_IDSIGNAL_H
-#define CONTROL_IDENT_IDSIGNAL_H
+#pragma once
 
 #include <random>
 
-namespace control {
-namespace ident {
+namespace control::ident {
 
 /**
  * PRBS
@@ -46,6 +40,3 @@ class PRBS {
 };
 
 }
-}
-
-#endif //CONTROL_IDENT_IDSIGNAL_H

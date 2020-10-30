@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 # Call cmake with -D TESTS=ON to set this flag to true.
 option(TESTS "build tests" OFF)
 
 project(control CXX)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 include_directories(include)
 
@@ -45,9 +45,10 @@ if(TESTS)
 	./tests/gtest.cpp
     tests/pid-test.cpp
     tests/biquad-test.cpp
+    tests/ghk-test.cpp
     tests/biquad-cascade-test.cpp
     tests/prbs-test.cpp
-    tests/ss-test.cpp)
+    tests/ss-test.cpp include/control/filter/ghk.h)
 
   find_package (Eigen3 3.3 REQUIRED)
 
