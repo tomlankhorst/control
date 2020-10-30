@@ -1,8 +1,6 @@
 C++ Control
 ===========
 
-[![Build Status](https://travis-ci.org/tomlankhorst/control.svg?branch=master)](https://travis-ci.org/tomlankhorst/control)
-
 [API Docs](https://tomlankhorst.github.io/control/)
 
 Control functionality in C++
