@@ -1,21 +1,16 @@
 /*
- * pid.h
- *
  * Classic P/PI/PID control
- *
- * @author Tom Lankhorst
  */
 
-#ifndef CONTROL_CLASSIC_PID_H_
-#define CONTROL_CLASSIC_PID_H_
+#pragma once
 
 #include <limits>
 #include <algorithm>
-#include "../filter/biquad.h"
-#include "../system/type.h"
 
-namespace control {
-namespace classic {
+#include "control/filter/biquad.h"
+#include "control/system/type.h"
+
+namespace control::classic {
 
 /**
  * Helper that returns the maximum value of the type or infinity when present
@@ -40,9 +35,9 @@ class AbstractController : public system::SISO<T> {
    * Constructor
    * @param Limit_ maximum value of the output signal
    */
-  AbstractController(T Limit_ = max<T>()) : Limit(Limit_) {};
+  explicit AbstractController(T Limit_ = max<T>()) : Limit(Limit_) {};
 
-  virtual ~AbstractController() {};
+  virtual ~AbstractController() = default;
 
   // Limit
   T Limit;
@@ -56,7 +51,7 @@ class AbstractController : public system::SISO<T> {
    * @param T e the error value
    * @return T the controller output
    */
-  T step(T e) {
+  T step(T e) final {
     T u;
 
     // Get the control effort
@@ -134,9 +129,9 @@ class P : public AbstractController<T> {
    * @param Kp_ Proportional gain
    * @param Limit_ Maximum output value
    */
-  P(T Kp_ = 1.0, T Limit_ = max<T>()) : AbstractController<T>(Limit_), Kp(Kp_) {};
+  explicit P(T Kp_ = 1.0, T Limit_ = max<T>()) : AbstractController<T>(Limit_), Kp(Kp_) {};
 
-  ~P() {};
+  ~P() = default;;
 
   // Proportional gain
   const T Kp;
@@ -172,7 +167,7 @@ class PID : public AbstractController<T> {
    * @param N Filter coefficicent
    * @param Limit Maximum output
    */
-  PID(T Ts = 1.0, T Kp = 1.0, T Ti = max<T>(), T Td = 0.0, T N = max<T>(), T Limit = max<T>())
+  explicit PID(T Ts = 1.0, T Kp = 1.0, T Ti = max<T>(), T Td = 0.0, T N = max<T>(), T Limit = max<T>())
       : AbstractController<T>(Limit), B(
       (Kp * (4 * Td / N + 2 * Td * Ts / Ti / N + Ts * Ts / Ti + 4 * Td + 2 * Ts)) / (4 * Td / N + 2 * Ts),
       -(Kp * (-Ts * Ts / Ti + 4 * Td / N + 4 * Td)) / (2 * Td / N + Ts),
@@ -227,7 +222,7 @@ class PI : public PID<T> {
    * @param Ti_ Integrator time-constant (s)
    * @param Limit_ Maximum output value
    */
-  PI(T Ts_ = 1, T Kp_ = 1, T Ti_ = max<T>(), T Limit_ = max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(),
+  explicit PI(T Ts_ = 1, T Kp_ = 1, T Ti_ = max<T>(), T Limit_ = max<T>()) : PID<T>(Ts_, Kp_, Ti_, 0, max<T>(),
                                                                            Limit_) {};
 };
 
@@ -246,12 +241,9 @@ class PD : public PID<T> {
    * @param N Filter coefficicent
    * @param Limit_ Maximum output value
    */
-  PD(T Ts_ = 1, T Kp_ = 1, T Td_ = 0, T N_ = max<T>(), T Limit_ = max<T>()) : PID<T>(Ts_, Kp_, max<T>(), Td_,
+  explicit PD(T Ts_ = 1, T Kp_ = 1, T Td_ = 0, T N_ = max<T>(), T Limit_ = max<T>()) : PID<T>(Ts_, Kp_, max<T>(), Td_,
                                                                                      N_, Limit_) {};
 };
 
 }
-}
-
-#endif /* CONTROL_CLASSIC_PID_H_ */
 
