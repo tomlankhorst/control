@@ -2,6 +2,7 @@ C++ Control
 ===========
 
 [API Docs](https://tomlankhorst.github.io/control/)
+[Github](https://github.com/tomlankhorst/control/)
 
 Control functionality in C++
 
